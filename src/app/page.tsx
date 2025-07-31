@@ -1,8 +1,10 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { useTRPC } from "@/trpc/client";
 import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
 import { toast } from "sonner";
 
 export default function Home() {
@@ -12,9 +14,12 @@ export default function Home() {
       toast.success("Function invoked successfully!");
     }
   }));
+  const [value, setValue] = useState("");
+
   return (
     <div>
-      <Button onClick={() => invoke.mutate({ text: "John" })}>
+      <Input value={value} onChange={(e) => setValue(e.target.value)} placeholder="Enter a value" />
+      <Button onClick={() => invoke.mutate({ value })} disabled={invoke.isPending}>
         Invoke Function
       </Button>
     </div>
