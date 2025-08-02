@@ -3,12 +3,10 @@ import { inngest } from "./client";
 import { openai, createAgent, createTool, createNetwork } from "@inngest/agent-kit";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import { PROMPT } from "@/prompt";
-import { title } from "process";
-import { SunMedium } from "lucide-react";
 
-export const helloWorld = inngest.createFunction(
-  { id: "hello-world" },
-  { event: "test/hello.world" },
+export const codeAgentFunction = inngest.createFunction(
+  { id: "codeAgentFunction" },
+  { event: "code-agent" },
    async ({ event , step }) => {
     const sandboxId = await step.run("get-sandbox-id", async () => {
       const sandbox = await Sandbox.create("woody-nestjs-temp");
@@ -17,7 +15,7 @@ export const helloWorld = inngest.createFunction(
 
     try {
       const codeAgent = createAgent({
-        name: "writer",
+        name: "codeAgent",
         system: PROMPT,
         description: "An AI Expert coding agent that can create a nextjs project",
         model: openai({ model: "gpt-4o"}),
