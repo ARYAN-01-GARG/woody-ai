@@ -19,7 +19,7 @@ export const codeAgentFunction = inngest.createFunction(
         name: "codeAgent",
         system: PROMPT,
         description: "An AI Expert coding agent that can create a nextjs project",
-        model: gemini({ model: "gemini-2.5-flash-lite" }),
+        model: gemini({ model: "gemini-2.5-flash" }),
         tools : [
           createTool({
             name: "terminal",
@@ -117,6 +117,8 @@ export const codeAgentFunction = inngest.createFunction(
 
       const result = await network.run(event.data.value);
 
+      const isError = !result.state.data.summary || Object.keys(result.state.data.files || {}).length === 0
+
       const sandboxUrl = await step.run("get-sandbox-url", async () => {
         const sandbox = await getSandbox(sandboxId);
         const host = sandbox.getHost(3000);
@@ -124,9 +126,20 @@ export const codeAgentFunction = inngest.createFunction(
       });
 
       await step.run("save-result", async () => {
+        if (isError) {
+          return await prisma.message.create({
+            data: {
+              content : "Error: Failed to generate content. Please try again later.",
+              projectId : event.data.projectId,
+              role : "ASSISTANT",
+              type : "ERROR",
+            }
+          });
+        }
         await prisma.message.create({
           data: {
             content : result.state.data.summary,
+            projectId : event.data.projectId,
             role : "ASSISTANT",
             type : "RESULT",
             fragment : {

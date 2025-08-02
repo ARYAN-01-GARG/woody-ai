@@ -8,6 +8,14 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Project {
+  id        String   @id @default(uuid())
+  name      String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  messages  Message[]
+}
 
 enum MessageRole {
   USER
@@ -23,6 +31,10 @@ model Message {
   content   String
   role     MessageRole  @default(USER)
   type    MessageType   @default(RESULT)
+
+  projectId String
+  project Project @relation(fields: [projectId], references: [id] , onDelete: Cascade)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
