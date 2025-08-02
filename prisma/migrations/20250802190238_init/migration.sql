@@ -5,11 +5,22 @@ CREATE TYPE "public"."MessageRole" AS ENUM ('USER', 'ASSISTANT');
 CREATE TYPE "public"."MessageType" AS ENUM ('ERROR', 'RESULT');
 
 -- CreateTable
+CREATE TABLE "public"."Project" (
+    "id" TEXT NOT NULL,
+    "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "Project_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
 CREATE TABLE "public"."Message" (
     "id" TEXT NOT NULL,
     "content" TEXT NOT NULL,
-    "role" "public"."MessageRole" NOT NULL,
-    "type" "public"."MessageType" NOT NULL,
+    "role" "public"."MessageRole" NOT NULL DEFAULT 'USER',
+    "type" "public"."MessageType" NOT NULL DEFAULT 'RESULT',
+    "projectId" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -31,6 +42,9 @@ CREATE TABLE "public"."Fragment" (
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Fragment_messageId_key" ON "public"."Fragment"("messageId");
+
+-- AddForeignKey
+ALTER TABLE "public"."Message" ADD CONSTRAINT "Message_projectId_fkey" FOREIGN KEY ("projectId") REFERENCES "public"."Project"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "public"."Fragment" ADD CONSTRAINT "Fragment_messageId_fkey" FOREIGN KEY ("messageId") REFERENCES "public"."Message"("id") ON DELETE CASCADE ON UPDATE CASCADE;

@@ -1,35 +1,38 @@
 import { inngest } from "@/inngest/client";
 import { prisma } from "@/lib/db";
+import { generateSlug } from "random-word-slugs"
 import { baseProcedure, createTRPCRouter } from "@/trpc/init";
 import { z } from "zod";
 
-export const messagesRouter = createTRPCRouter({
+export const projectsRouter = createTRPCRouter({
     getMany: baseProcedure
         .query(async () => {
-            const messages = await prisma.message.findMany({
+            const projects = await prisma.project.findMany({
                 orderBy: {
                     updatedAt: "desc",
-                },
-                include: {
-                    fragment : true,
                 }
             });
-            return messages;
+            return projects;
         }),
     create : baseProcedure
         .input(
             z.object({
                 value: z.string().min(1, { message: "Value is required" }).max(10000, { message : "Message is too long" }),
-                projectId : z.string().min(1, { message: "Invalid project ID" })
             })
         )
         .mutation(async ({ input }) => {
-            const newMessage = await prisma.message.create({
+            const newProject = await prisma.project.create({
                 data: {
-                    content: input.value,
-                    projectId : input.projectId,
-                    role : "USER",
-                    type : "RESULT"
+                    name : generateSlug(2 ,{
+                        format: "kebab",
+                    }),
+                    messages : {
+                        create : {
+                            content: input.value,
+                            role: "USER",
+                            type: "ERROR"
+                        }
+                    }
                 },
             });
 
@@ -37,8 +40,9 @@ export const messagesRouter = createTRPCRouter({
                 name: "code-agent",
                 data: {
                     value : input.value,
+                    projectId : newProject.id,
                 },
             })
-            return newMessage;
+            return newProject;
         })
 });
