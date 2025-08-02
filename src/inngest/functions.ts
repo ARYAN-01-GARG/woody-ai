@@ -3,6 +3,7 @@ import { inngest } from "./client";
 import { openai, createAgent, createTool, createNetwork } from "@inngest/agent-kit";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import { PROMPT } from "@/prompt";
+import { prisma } from "@/lib/db";
 
 export const codeAgentFunction = inngest.createFunction(
   { id: "codeAgentFunction" },
@@ -119,8 +120,24 @@ export const codeAgentFunction = inngest.createFunction(
       const sandboxUrl = await step.run("get-sandbox-url", async () => {
         const sandbox = await getSandbox(sandboxId);
         const host = sandbox.getHost(3000);
-
         return `http://${host}`;
+      });
+
+      await step.run("save-result", async () => {
+        await prisma.message.create({
+          data: {
+            content : result.state.data.summary,
+            role : "ASSISTANT",
+            type : "RESULT",
+            fragment : {
+              create : {
+                sandboxUrl : sandboxUrl,
+                title : "Fragments",
+                files : result.state.data.files,
+              },
+            }
+          }
+        })
       });
 
       return {
