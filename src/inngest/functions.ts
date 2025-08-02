@@ -1,6 +1,6 @@
 import { Sandbox } from "@e2b/code-interpreter";
 import { inngest } from "./client";
-import { openai, createAgent, createTool, createNetwork } from "@inngest/agent-kit";
+import { gemini, createAgent, createTool, createNetwork } from "@inngest/agent-kit";
 import { getSandbox, lastAssistantTextMessageContent } from "./utils";
 import { PROMPT } from "@/prompt";
 import { prisma } from "@/lib/db";
@@ -19,7 +19,7 @@ export const codeAgentFunction = inngest.createFunction(
         name: "codeAgent",
         system: PROMPT,
         description: "An AI Expert coding agent that can create a nextjs project",
-        model: openai({ model: "gpt-4o"}),
+        model: gemini({ model: "gemini-2.5-flash-lite" }),
         tools : [
           createTool({
             name: "terminal",
@@ -47,8 +47,8 @@ export const codeAgentFunction = inngest.createFunction(
           }),
           createTool({
             name : "createOrUpdateFiles",
-            description: "Create or update files in the project",
-            handler: async ({ files } : { files : { path : string, content: string }[]}, { step, network }) => {
+            description: "Create or update files in the project, files should be an array of objects pf path and content",
+            handler: async ({ files }: { files: Array<{ path: string; content: string }> }, { step, network }) => {
               const newFiles = await step?.run("create-or-update-files", async () => {
                 try {
                   const updatedFiles = network.state.data.files || {};
@@ -64,14 +64,14 @@ export const codeAgentFunction = inngest.createFunction(
                 }
               });
               if (typeof newFiles === "object") {
-                return newFiles;
+                network.state.data.files = newFiles;
               }
             }
           }),
           createTool({
             name: "ReadFiles",
-            description: "Read files from the project",
-            handler: async ({ files } : { files : string[]}, { step }) => {
+            description: "Read files from the project and it will be an array",
+            handler: async ({ files } : { files : Array<string>}, { step }) => {
               return await step?.run("readFiles", async () => {
                 try {
                   const sandbox = await getSandbox(sandboxId);

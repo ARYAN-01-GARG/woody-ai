@@ -10,6 +10,9 @@ export const messagesRouter = createTRPCRouter({
                 orderBy: {
                     updatedAt: "desc",
                 },
+                include: {
+                    fragment : true,
+                }
             });
             return messages;
         }),
