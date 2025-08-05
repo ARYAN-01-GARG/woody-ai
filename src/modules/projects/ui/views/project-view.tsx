@@ -1,18 +1,18 @@
 "use client";
 
-import { useTRPC } from "@/trpc/client";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { ResizableHandle, ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
+import { Suspense, useState } from "react";
+import { Fragment } from "@/generated/prisma";
 import MessageContainer from "../components/message-container";
-import { Suspense } from "react";
+import { ResizableHandle, ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
+import ProjectHeader from "../components/project-header";
 
 interface ProjectViewProps {
     projectId: string;
 }
 
 function ProjectView({ projectId }: ProjectViewProps) {
-    const trpc = useTRPC();
-    const { data : project } = useSuspenseQuery(trpc.projects.getOne.queryOptions({ id: projectId }));
+    const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
+
 
   return (
     <div className="h-screen">
@@ -22,8 +22,15 @@ function ProjectView({ projectId }: ProjectViewProps) {
                 minSize={20}
                 className="flex min-h-0 flex-col"
             >
+                <Suspense fallback={<div>Loading project...</div>}>
+                    <ProjectHeader projectId={projectId} />
+                </Suspense>
                 <Suspense fallback={<div>Loading messages...</div>}>
-                    <MessageContainer projectId={projectId} />
+                    <MessageContainer
+                        projectId={projectId}
+                        activeFragment={activeFragment}
+                        setActiveFragment={setActiveFragment}
+                    />
                 </Suspense>
             </ResizablePanel>
             <ResizableHandle  withHandle />
@@ -31,7 +38,7 @@ function ProjectView({ projectId }: ProjectViewProps) {
                 defaultSize={65}
                 minSize={50}
                 >
-                {JSON.stringify(project)}
+                TODO : Preview
             </ResizablePanel>
         </ResizablePanelGroup>
     </div>
