@@ -47,7 +47,7 @@ function MessageForm({ projectId }: Props) {
     const onSubmit = async (values: z.infer<typeof formSchema>) => {
         await createMessage.mutateAsync({
             value: values.value,
-            projectId,
+            projectId : projectId,
         });
     };
 

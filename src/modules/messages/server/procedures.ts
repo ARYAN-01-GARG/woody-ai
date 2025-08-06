@@ -45,6 +45,7 @@ export const messagesRouter = createTRPCRouter({
                 name: "code-agent",
                 data: {
                     value : input.value,
+                    projectId : input.projectId,
                 },
             })
             return newMessage;

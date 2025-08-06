@@ -5,6 +5,7 @@ import { Fragment } from "@/generated/prisma";
 import MessageContainer from "../components/message-container";
 import { ResizableHandle, ResizablePanelGroup, ResizablePanel } from "@/components/ui/resizable";
 import ProjectHeader from "../components/project-header";
+import FragmentWeb from "../components/fragment-web";
 
 interface ProjectViewProps {
     projectId: string;
@@ -12,7 +13,6 @@ interface ProjectViewProps {
 
 function ProjectView({ projectId }: ProjectViewProps) {
     const [activeFragment, setActiveFragment] = useState<Fragment | null>(null);
-
 
   return (
     <div className="h-screen">
@@ -38,7 +38,7 @@ function ProjectView({ projectId }: ProjectViewProps) {
                 defaultSize={65}
                 minSize={50}
                 >
-                TODO : Preview
+                {!!activeFragment && <FragmentWeb data={activeFragment} />}
             </ResizablePanel>
         </ResizablePanelGroup>
     </div>
