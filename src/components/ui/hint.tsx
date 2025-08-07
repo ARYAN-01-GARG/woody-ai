@@ -11,6 +11,16 @@ interface HintProps {
     align? : 'start' | 'center' | 'end';
 }
 
+/**
+ * Displays a tooltip with customizable position and alignment when hovering or focusing on the wrapped element.
+ *
+ * @param children - The React node that triggers the tooltip when interacted with
+ * @param text - The string content shown inside the tooltip
+ * @param side - Optional; the side of the trigger where the tooltip appears (`'top'`, `'right'`, `'bottom'`, or `'left'`). Defaults to `'top'`.
+ * @param align - Optional; alignment of the tooltip relative to the trigger (`'start'`, `'center'`, or `'end'`). Defaults to `'center'`.
+ *
+ * @returns A React element that wraps the children with tooltip functionality
+ */
 function Hint({
     children,
     text,

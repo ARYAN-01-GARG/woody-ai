@@ -10,6 +10,14 @@ interface Props{
     data: Fragment;
 }
 
+/**
+ * Renders an interactive UI for viewing and managing a sandboxed web fragment.
+ *
+ * Displays a toolbar with options to refresh, copy, or open the fragment's sandbox URL, and embeds the fragment in an iframe. The copy and open actions are only enabled if a sandbox URL is available.
+ *
+ * @param data - The fragment data containing the sandbox URL to display and interact with.
+ * @returns A React component for interacting with the fragment's sandbox environment.
+ */
 function FragmentWeb({ data } : Props) {
   const [fragmentKey , setFragmentKey] = useState(0);
   const [copied , setCopied] = useState(false);
