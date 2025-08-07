@@ -20,6 +20,13 @@ export const metadata: Metadata = {
   description: "Woody AI is a powerful AI assistant that helps you with your daily tasks. create, manage, and automate your workflows with ease.",
 };
 
+/**
+ * Root layout component that sets up global providers, theming, fonts, and notification support for the application.
+ *
+ * Wraps the app with tRPC context, applies custom fonts, manages theme switching, and includes a toast notification system.
+ *
+ * @param children - The content to render within the layout
+ */
 export default function RootLayout({
   children,
 }: Readonly<{
