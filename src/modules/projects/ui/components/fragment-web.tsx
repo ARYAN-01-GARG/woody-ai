@@ -1,9 +1,10 @@
 "use client";
 
+import React, { useState } from 'react'
 import { Button } from '@/components/ui/button';
 import { Fragment } from '@/generated/prisma';
 import { ExternalLinkIcon, RefreshCcwIcon } from 'lucide-react';
-import React, { useState } from 'react'
+import Hint from '@/components/ui/hint';
 
 interface Props{
     data: Fragment;
@@ -26,32 +27,38 @@ function FragmentWeb({ data } : Props) {
   };
 
   return (
-    <div className="flex flex-col  w-full h-full">
-      <div className='p-2 border-b bg-sidebar flex items-center gap-x-2'>
-        <Button variant='outline' size={'sm'} onClick={handleRefresh}>
-          <RefreshCcwIcon/>
-        </Button>
-        <Button
-          variant='outline'
-          size={'sm'}
-          onClick={handleCopy}
-          disabled={!data.sandboxUrl || copied}
-          className='flex-1 justify-start text-center font-normal'
-        >
-          <span className='truncate'>{data.sandboxUrl}</span>
-        </Button>
-        <Button
-          variant={'outline'}
-          size={'sm'}
-          onClick={() => {
-            if (data.sandboxUrl) {
-              window.open(data.sandboxUrl, '_blank');
-            }
-          }}
-          disabled={!data.sandboxUrl}
-        >
-          <ExternalLinkIcon />
-        </Button>
+    <div className="flex flex-col w-full h-full">
+      <div className='p-2 border-b bg-sidebar flex items-center gap-x-2 w-full'>
+        <Hint text="Refresh" side='bottom' align='start'>
+          <Button variant='outline' size={'sm'} onClick={handleRefresh}>
+            <RefreshCcwIcon/>
+          </Button>
+        </Hint>
+        <Hint text="Click to copy the sandbox URL" side='bottom'>
+          <Button
+            variant='outline'
+            size={'sm'}
+            onClick={handleCopy}
+            disabled={!data.sandboxUrl || copied}
+            className='flex-grow justify-start text-center font-normal'
+          >
+            <span className='truncate'>{data.sandboxUrl}</span>
+          </Button>
+        </Hint>
+        <Hint text="Open in new tab" side='bottom' align='start'>
+          <Button
+            variant={'outline'}
+            size={'sm'}
+            onClick={() => {
+              if (data.sandboxUrl) {
+                window.open(data.sandboxUrl, '_blank');
+              }
+            }}
+            disabled={!data.sandboxUrl}
+          >
+            <ExternalLinkIcon />
+          </Button>
+      </Hint>
       </div>
       <iframe
         key={fragmentKey}
@@ -64,4 +71,4 @@ function FragmentWeb({ data } : Props) {
   )
 }
 
-export default FragmentWeb
+export default FragmentWeb;
