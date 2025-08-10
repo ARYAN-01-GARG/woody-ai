@@ -26,26 +26,24 @@ export const TreeView = ({
 } : TreeViewProps) => {
     return (
         <SidebarProvider>
-            <Sidebar>
-                <SidebarContent>
-                    <SidebarGroup>
-                        <SidebarGroupContent>
-                            <SidebarMenu>
-                                {data.map((item, index) => (
-                                    <Tree
-                                        key={index}
-                                        item={item}
-                                        selectedValue={value}
-                                        onSelect={onSelect}
-                                        parentPath=""
-                                    />
-                                ))}
-                            </SidebarMenu>
-                        </SidebarGroupContent>
-                    </SidebarGroup>
-                </SidebarContent>
-                <SidebarRail />
-            </Sidebar>
+            <SidebarContent>
+                <SidebarGroup>
+                    <SidebarGroupContent>
+                        <SidebarMenu>
+                            {data.map((item, index) => (
+                                <Tree
+                                    key={index}
+                                    item={item}
+                                    selectedValue={value}
+                                    onSelect={onSelect}
+                                    parentPath=""
+                                />
+                            ))}
+                        </SidebarMenu>
+                    </SidebarGroupContent>
+                </SidebarGroup>
+            </SidebarContent>
+            <SidebarRail />
         </SidebarProvider>
     )
 };
@@ -72,7 +70,7 @@ const Tree = ({
         return (
             <SidebarMenuButton
                 isActive={isSelected}
-                className="data-[active=true]:bg-transparent"
+                className="data-[active=true]:bg-transparent data-[active=true]:font-bold cursor-pointer"
                 onClick={() => onSelect?.(currentPath)}
             >
                 <FileIcon />
@@ -86,10 +84,10 @@ const Tree = ({
     return (
         <SidebarMenuItem>
             <Collapsible
-                className="group/collapsible [&[data-state=open]>button>svg:first-child]:rotate-90"
+                className="group/collapsible [&[data-state=open]>button>button>svg:first-child]:rotate-90"
             >
-                 <CollapsibleTrigger >
-                    <SidebarMenuButton>
+                 <CollapsibleTrigger>
+                    <SidebarMenuButton className="cursor-pointer">
                         <ChevronRightIcon className="transition-transform" />
                         <FolderIcon/>
                         <span className="truncate">
